@@ -44,6 +44,14 @@ def compute_basis(dataset, degree):
     return phi
 
 
+def train_linear_regression(phi, dataset):
+    return np.linalg.pinv(phi.T @ phi) @ phi.T @ dataset
+
+
+def predict(phi, weight):
+    return phi @ weight
+
+
 def main():
     x, y = load_dataset()
     x_train, y_train, x_test, y_test = split_data(x, y, 0.8)
@@ -52,6 +60,10 @@ def main():
     for degree in degrees:
         phi_train = compute_basis(x_train, degree)
         phi_test = compute_basis(x_test, degree)
+
+        weight = train_linear_regression(phi_train, y_train)
+        y_pred_train = predict(phi_train, weight)
+        y_pred_test = predict(phi_test, weight)
 
 
 if __name__ == "__main__":
