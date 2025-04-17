@@ -23,8 +23,18 @@ def load_dataset():
     return x, y
 
 
+def split_data(x, y, train_ratio):
+    indices = np.arange(x.shape[0])
+    np.random.shuffle(indices)
+    train_size = int(len(x) * train_ratio)
+    train_idx = indices[:train_size]
+    test_idx = indices[train_size:]
+    return x[train_idx], y[train_idx], x[test_idx], y[test_idx]
+
+
 def main():
     x, y = load_dataset()
+    x_train, y_train, x_test, y_test = split_data(x, y, 0.8)
 
 
 if __name__ == "__main__":
