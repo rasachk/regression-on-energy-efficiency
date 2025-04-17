@@ -52,6 +52,10 @@ def predict(phi, weight):
     return phi @ weight
 
 
+def compute_rmsd(y_true, y_pred):
+    return np.sqrt(np.mean((y_true - y_pred) ** 2))
+
+
 def main():
     x, y = load_dataset()
     x_train, y_train, x_test, y_test = split_data(x, y, 0.8)
@@ -64,6 +68,14 @@ def main():
         weight = train_linear_regression(phi_train, y_train)
         y_pred_train = predict(phi_train, weight)
         y_pred_test = predict(phi_test, weight)
+
+        rmsd_train = []
+        rmsd_test = []
+
+        rmsd_train.append(compute_rmsd(y_train, y_pred_train))
+        rmsd_test.append(compute_rmsd(y_test, y_pred_test))
+
+        print(f"Degree {degree}: Train RMSD = {rmsd_train[-1]:.4f}, Test RMSD = {rmsd_test[-1]:.4f}")
 
 
 if __name__ == "__main__":
