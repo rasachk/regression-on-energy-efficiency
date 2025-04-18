@@ -1,6 +1,7 @@
 import numpy as np
 import csv
 from itertools import combinations_with_replacement
+import matplotlib.pyplot as plt
 
 
 def load_dataset():
@@ -61,6 +62,10 @@ def main():
     x_train, y_train, x_test, y_test = split_data(x, y, 0.8)
 
     degrees = range(1, 6)
+
+    rmsd_train = []
+    rmsd_test = []
+
     for degree in degrees:
         phi_train = compute_basis(x_train, degree)
         phi_test = compute_basis(x_test, degree)
@@ -69,13 +74,22 @@ def main():
         y_pred_train = predict(phi_train, weight)
         y_pred_test = predict(phi_test, weight)
 
-        rmsd_train = []
-        rmsd_test = []
-
         rmsd_train.append(compute_rmsd(y_train, y_pred_train))
         rmsd_test.append(compute_rmsd(y_test, y_pred_test))
 
         print(f"Degree {degree}: Train RMSD = {rmsd_train[-1]:.4f}, Test RMSD = {rmsd_test[-1]:.4f}")
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(degrees, rmsd_train, marker='o', label='Train RMSD')
+    plt.plot(degrees, rmsd_test, marker='s', label='Test RMSD')
+    plt.xlabel('Polynomial Degree')
+    plt.ylabel('RMSD')
+    plt.title('RMSD vs Polynomial Degree (Heating Load Prediction)')
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig("plot_rmsd.png")
+    plt.show()
 
 
 if __name__ == "__main__":
